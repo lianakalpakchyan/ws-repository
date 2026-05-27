@@ -1,14 +1,8 @@
-from dataclasses import dataclass
 from typing import Protocol
-from repos.in_memory import InMemoryRepository
-from repos.json_repo import JsonRepository
 
-@dataclass
-class User:
-    name: str
-    email: str
-    age: int
-
+from exceptions import DuplicateEmailError
+from repos.sqlite import SQLiteRepository
+from schemas.users import User
 
 class Repository(Protocol):
     def save(self, user: dict) -> None: ...
@@ -16,21 +10,22 @@ class Repository(Protocol):
 
 
 class UserService:
-    def __init__(self, repository: Repository):
+    def __init__(self, repository: SQLiteRepository):
         self.repository = repository
 
     def register(self, user: User) -> None:
-        self.repository.save(user.__dict__)
+        try:
+            self.repository.save(user)
+        except DuplicateEmailError:
+            print("User already exists")
 
-    def find_by_email(self, email: str) -> User:
-        return User(**self.repository.find_by_email(email))
+    def find_by_email(self, email: str) -> User | None:
+        return self.repository.find_by_email(email)
 
 
 if __name__ == "__main__":
-    #in_memory_repo = InMemoryRepository()
-    # user_service = UserService(in_memory_repo)
-    json_repo = JsonRepository("users.json")
-    user_service = UserService(json_repo)
+    sql_repo = SQLiteRepository()
+    user_service = UserService(sql_repo)
     user1 = User("Alice", "alice@example.com", 30)
     user_service.register(user1)
     print(user_service.find_by_email("alice@example.com"))
