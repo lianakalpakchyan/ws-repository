@@ -1,26 +1,13 @@
 from typing import Protocol
 
-from exceptions import DuplicateEmailError
 from repos.sqlite import SQLiteRepository
 from schemas.users import User
+from services.users import UserService
+
 
 class Repository(Protocol):
-    def save(self, user: dict) -> None: ...
-    def find_by_email(self, email: str) -> dict: ...
-
-
-class UserService:
-    def __init__(self, repository: SQLiteRepository):
-        self.repository = repository
-
-    def register(self, user: User) -> None:
-        try:
-            self.repository.save(user)
-        except DuplicateEmailError:
-            print("User already exists")
-
-    def find_by_email(self, email: str) -> User | None:
-        return self.repository.find_by_email(email)
+    def save(self, data: dict) -> None: ...
+    def find_by_email(self, email: str) -> dict | None: ...
 
 
 if __name__ == "__main__":

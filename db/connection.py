@@ -5,7 +5,7 @@ from contextlib import contextmanager
 class SQLiteConnection:
     def __init__(self, db_name="users.db"):
         self.db_name = db_name
-        self._conn = sq.connect(db_name, check_same_thread=False)
+        self._conn = sq.connect(db_name)
         self._conn.row_factory = sq.Row
         self._create_tables()
 
