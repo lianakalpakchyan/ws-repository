@@ -2,9 +2,10 @@ import sqlite3 as sq
 
 from db.connection import SQLiteConnection
 from exceptions import DuplicateEmailError
+from protocols.repo import Repository
 
 
-class SQLiteRepository(SQLiteConnection):
+class SQLiteRepository(Repository, SQLiteConnection):
     def save(self, data: dict) -> None:
         try:
             with self._get_cursor() as cursor:
@@ -12,7 +13,7 @@ class SQLiteRepository(SQLiteConnection):
                     "INSERT INTO users (name, email, age) VALUES (?, ?, ?)",
                     (data["name"], data["email"], data["age"])
                 )
-        except sq.IntegrityError as e:
+        except sq.IntegrityError:
             raise DuplicateEmailError(f"User with '{data["email"]}' email already exists")
 
     def find_by_email(self, email: str) -> dict | None:

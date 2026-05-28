@@ -1,9 +1,9 @@
-from repos.sqlite import SQLiteRepository
+from protocols.repo import Repository
 from schemas.users import User
 
 
 class UserService:
-    def __init__(self, repository: SQLiteRepository):
+    def __init__(self, repository: Repository):
         self.repository = repository
 
     def register(self, user: User) -> None:

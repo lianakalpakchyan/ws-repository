@@ -1,0 +1,6 @@
+from typing import Protocol
+
+
+class Repository(Protocol):
+    def save(self, data: dict) -> None: ...
+    def find_by_email(self, email: str) -> dict | None: ...

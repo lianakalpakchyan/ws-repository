@@ -1,13 +1,6 @@
-from typing import Protocol
-
 from repos.sqlite import SQLiteRepository
 from schemas.users import User
 from services.users import UserService
-
-
-class Repository(Protocol):
-    def save(self, data: dict) -> None: ...
-    def find_by_email(self, email: str) -> dict | None: ...
 
 
 if __name__ == "__main__":
